@@ -1,4 +1,5 @@
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -15,42 +16,89 @@ public class Application {
 			e.printStackTrace();
 		}
 		
-		Object o = c.newInstance();
+		Class<?> cAlt = null;
+		try {
+			cAlt = Class.forName("Monsieur");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		
-		Class<?> c2 = o.getClass();
-		System.out.println(c2.toString());
-
+		Object o = c.newInstance();
+		Object objTest = c.newInstance();
 	
-		Class<?> c3 = null; 
-		Mademoiselle mad = new Mademoiselle();
-		conversion( mad, c3 );
+		 
+		conversion( objTest, cAlt );
 			
 	}
 
 	
-	public static Object conversion( Object source, Class<?> targetClass ) {
+	public static Object conversion( Object source, Class<?> targetClass ) throws InstantiationException, IllegalAccessException {
 		
-		Class<?> cSource = source.getClass();
-		System.out.println(cSource.getName());
-		Field[] fSource = cSource.getDeclaredFields(); // Pas pareil que "getFields()"
-		Annotation[] fAnnot = cSource.getAnnotations();
-		Method[] fMethod = cSource.getMethods();
+		Class<?> classeSource = source.getClass();
+		System.out.println("Classe : "+classeSource.getName());
 		
-		for (int i=0; i< fSource.length; i++) {
-			System.out.println(fSource[i]);
-		}
+		// Pas pareil que "getFields()" qui recupere tous, sauf ce qui est explicitement declare dans la classe
+		Field[] fieldSource = classeSource.getDeclaredFields(); 
+				
+		Method[] methodSource = classeSource.getDeclaredMethods();
 		
-		for (int i=0; i< fAnnot.length; i++) {
-			System.out.println(fAnnot[i]);
+		/*
+		System.out.println("Fields : ");
+		for (int i=0; i< fieldSource.length; i++) {
+			System.out.println(fieldSource[i]);
 		}
 		
 		System.out.println("Methods : ");
-		for (int i=0; i< fMethod.length; i++) {
-			System.out.println(fMethod[i]);
+		for (int i=0; i< methodSource.length; i++) {
+			System.out.println(methodSource[i]);
 		}
-		System.out.println("Finished");
+		*/
 		
-	return targetClass;
+		System.out.println("Analyse completed");
+		
+		Field[] fieldCible = targetClass.getDeclaredFields();
+//		Method[] methodCible = targetClass.getDeclaredMethods();
+		
+		Field[] fieldIntersect = new Field[fieldSource.length];
+		int ind=0;
+		
+		for(int i=0; i<fieldSource.length; i++){
+			String fSrc = fieldSource[i].getName();
+			for(int j=0; j<fieldCible.length; j++){
+				String fTgt = fieldCible[j].getName();
+//				System.out.println(fSrc.substring(fSrc.lastIndexOf(".")+1)+"\t-\t"+fTgt.substring(fTgt.lastIndexOf(".")+1));
+				if(fSrc.substring(fSrc.lastIndexOf(".")+1) == fTgt.substring(fTgt.lastIndexOf(".")+1)){
+					fieldIntersect[ind++]=fieldCible[i];
+				}
+			}
+		}
+		
+//		Method[] methodIntersect = new Method[methodSource.length];
+//		ind=0;
+//		
+//		for(int i=0; i<methodSource.length; i++){
+//			String mSrc = methodSource[i].getName();
+//			for(int j=0; j<methodCible.length; j++){
+//				String mTgt = methodCible[j].getName();
+//				System.out.println(mSrc.substring(mSrc.lastIndexOf(".")+1)+"\t-\t"+mTgt.substring(mTgt.lastIndexOf(".")+1));
+//				if(methodSource[i] == methodCible[j]){
+//					methodIntersect[ind++]=methodCible[i];
+//				}
+//			}
+//		}
+		
+		for(int i=0; i<fieldIntersect.length; i++){
+			System.out.println(fieldIntersect[i]);
+		}
+		
+//		for(int i=0; i<methodIntersect.length; i++){
+//			System.out.println(methodIntersect[i]);
+//		}
+				
+		Object converted = targetClass.newInstance();
+		
+		
+	return converted;
 		
 	}
 }

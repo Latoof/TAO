@@ -4,6 +4,7 @@ public class Mademoiselle implements IPersonne {
 	private String nom;
 	private String adresse;
 	private int age;
+	private int nbConquete;
 	
 	public Mademoiselle() {
 		this.nom = "nomgen";
@@ -32,6 +33,14 @@ public class Mademoiselle implements IPersonne {
 	@Override
 	public String getName() {
 		return this.nom;
+	}
+	
+	public int getNbConquete() {
+		return nbConquete;
+	}
+
+	public void setNbConquete(int nbConquete) {
+		this.nbConquete = nbConquete;
 	}
 
 	@Override
