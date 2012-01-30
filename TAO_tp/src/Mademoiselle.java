@@ -5,6 +5,11 @@ public class Mademoiselle implements IPersonne {
 	String adresse;
 	int age;
 	
+	public Mademoiselle() {
+		this.nom = "nomgen";
+		this.age = 18;
+	}
+	
 	public Mademoiselle(String nom) {
 		this.nom = nom;
 	}
