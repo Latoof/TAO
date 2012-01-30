@@ -1,9 +1,9 @@
 
 public class Mademoiselle implements IPersonne {
 
-	String nom;
-	String adresse;
-	int age;
+	private String nom;
+	private String adresse;
+	private int age;
 	
 	public Mademoiselle() {
 		this.nom = "nomgen";
