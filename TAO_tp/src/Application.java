@@ -27,13 +27,47 @@ public class Application {
 		Object o = c.newInstance();
 		
 		Object objTest = c.newInstance();
-			
-
 		 
-		conversion( objTest, cAlt );
 		
-		
+		Monsieur mon = new Monsieur("SonNom", "14 rue machinechouette", 23, true);
+		Object mad = conversion_t( mon, Mademoiselle.class );
 			
+	}
+	
+	public static Object conversion_t( Object source, Class<?> targetClass ) throws InstantiationException, IllegalAccessException {
+
+		Class<?> clSource = source.getClass();
+		
+	
+		Field[] sFields = clSource.getDeclaredFields();
+		Object oOut = targetClass.newInstance();
+		
+		for ( int i=0; i < sFields.length; i++ ) {
+			
+			try {
+				Field f = targetClass.getDeclaredField( sFields[i].getName() ); // On cherche si le Field existe dans la source ET dans la distination
+				System.out.println("Passed "+f.getName());
+				Class<?> type = f.getType();
+				f.set(oOut, sFields[i].get( source )); // Mettre dans l'objet de sortie le contenu du champs de meme nom venant de la classe source.
+				/* --> Ne fonctionne pas pour les attributs prives, donc va falloir utiliser les setters, chaud ! */
+				
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				System.out.println("Ignored : "+sFields[i].getName());
+				
+			}
+			finally {
+
+			}
+			
+		}
+		
+		System.out.println("Finished");
+		return null;
 	}
 
 	
