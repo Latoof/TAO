@@ -105,19 +105,22 @@ public class Application {
 		System.out.println( ((Mademoiselle) source).getTourDePoitrine());
 		
 		try {
-			Constructor ct = targetClass.getConstructor( new Class[]{ String.class, String.class, Integer.class, Boolean.class } );
-			Object objTest2 = ct.newInstance( "nomTest", "AdresseTest", 23, true );
+			Class[] types = new Class[]{ String.class, String.class, int.class, boolean.class };
+			Constructor ct = targetClass.getConstructor( types );
+			//System.out.println( ct[1].toString() );
+			
+			Object objTest2 = ct.newInstance("nomTest", "AdresseTest", 23, true );
 			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getName() );
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
