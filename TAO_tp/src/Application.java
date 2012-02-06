@@ -1,6 +1,7 @@
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
@@ -24,10 +25,14 @@ public class Application {
 		}
 		
 		Object o = c.newInstance();
+		
 		Object objTest = c.newInstance();
-	
+			
+
 		 
 		conversion( objTest, cAlt );
+		
+		
 			
 	}
 
@@ -96,6 +101,27 @@ public class Application {
 //		}
 				
 		Object converted = targetClass.newInstance();
+		System.out.println( converted+" - "+source);
+		System.out.println( ((Mademoiselle) source).getTourDePoitrine());
+		
+		try {
+			Constructor ct = targetClass.getConstructor( new Class[]{ String.class, String.class, Integer.class, Boolean.class } );
+			Object objTest2 = ct.newInstance( "nomTest", "AdresseTest", 23, true );
+			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getName() );
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
 		
 	return converted;
