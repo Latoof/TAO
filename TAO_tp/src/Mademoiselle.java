@@ -30,11 +30,14 @@ public class Mademoiselle implements IPersonne {
 		return this.age;
 	}
 
-	@Override
-	public String getName() {
-		return this.nom;
+	public void setNom(String nom) {
+		this.nom = nom;
 	}
-	
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
 	public int getNbConquete() {
 		return nbConquete;
 	}
@@ -43,10 +46,6 @@ public class Mademoiselle implements IPersonne {
 		this.nbConquete = nbConquete;
 	}
 
-	@Override
-	public void rename(String name) {
-		this.nom = name;
-	}
 
 	@Override
 	public void setAdresse(String adr) {
@@ -56,5 +55,11 @@ public class Mademoiselle implements IPersonne {
 	public int getTourDePoitrine() {
 		return (nom.hashCode()*this.age) / 2;
 	}
+
+	public String getNom() {
+		return nom;
+	}
+
+
 
 }

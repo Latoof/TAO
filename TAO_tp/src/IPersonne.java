@@ -1,10 +1,13 @@
 
 public interface IPersonne {
 
-		public void rename( String name );
-		public String getName();
+		public String getNom();
+		public void setNom( String nom );
+
 		
 		public int getAge();
+		public void setAge( int age );
+
 		
 		public String getAdresse();
 		public void setAdresse( String adr );

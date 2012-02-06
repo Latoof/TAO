@@ -31,16 +31,21 @@ public class Application {
 		
 		Monsieur mon = new Monsieur("SonNom", "14 rue machinechouette", 23, true);
 		Object mad = conversion_t( mon, Mademoiselle.class );
+		
+		System.out.println( "Objet de sortie : "+((Mademoiselle) mad).getNom()+", "+ ((Mademoiselle) mad).getAge() +" ans - "+((Mademoiselle) mad).getAdresse() );
 			
 	}
 	
 	public static Object conversion_t( Object source, Class<?> targetClass ) throws InstantiationException, IllegalAccessException {
 
-		Class<?> clSource = source.getClass();
+		Class<?> sourceClass = source.getClass();
 		
 	
-		Field[] sFields = clSource.getDeclaredFields();
+		Field[] sFields = sourceClass.getDeclaredFields();
+		Method[] sMethods = sourceClass.getMethods();
+		
 		Object oOut = targetClass.newInstance();
+		
 		
 		for ( int i=0; i < sFields.length; i++ ) {
 			
@@ -48,8 +53,24 @@ public class Application {
 				Field f = targetClass.getDeclaredField( sFields[i].getName() ); // On cherche si le Field existe dans la source ET dans la distination
 				System.out.println("Passed "+f.getName());
 				Class<?> type = f.getType();
-				f.set(oOut, sFields[i].get( source )); // Mettre dans l'objet de sortie le contenu du champs de meme nom venant de la classe source.
+				//f.set(oOut, sFields[i].get( source )); // Mettre dans l'objet de sortie le contenu du champs de meme nom venant de la classe source.
 				/* --> Ne fonctionne pas pour les attributs prives, donc va falloir utiliser les setters, chaud ! */
+
+				char[] stringArray = f.getName().toCharArray();
+				stringArray[0] = Character.toUpperCase(stringArray[0]);
+				String fNameMaj = new String(stringArray);
+
+				Method mSet = targetClass.getDeclaredMethod("set"+fNameMaj, f.getType());
+				Method mGet = sourceClass.getDeclaredMethod("get"+fNameMaj);
+				
+				System.out.println("Found "+mSet.getName()+" and "+mGet.getName());
+				
+				mSet.invoke( oOut, mGet.invoke(source) );
+
+				/**
+				 * FIn experience
+				 * Cela fonctionne. Prends en de la graine ! :P *content*
+				 */
 				
 			} catch (SecurityException e) {
 				// TODO Auto-generated catch block
@@ -59,6 +80,15 @@ public class Application {
 				//e.printStackTrace();
 				System.out.println("Ignored : "+sFields[i].getName());
 				
+			} catch (NoSuchMethodException e) {
+				System.out.println("Getter/Setter not found for "+sFields[i].getName());
+				//e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			finally {
 
@@ -67,7 +97,7 @@ public class Application {
 		}
 		
 		System.out.println("Finished");
-		return null;
+		return oOut;
 	}
 
 	
@@ -144,7 +174,9 @@ public class Application {
 			//System.out.println( ct[1].toString() );
 			
 			Object objTest2 = ct.newInstance("nomTest", "AdresseTest", 23, true );
-			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getName() );
+			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getNom() );
+			
+			
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
