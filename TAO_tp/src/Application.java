@@ -105,7 +105,7 @@ public class Application {
 		System.out.println( ((Mademoiselle) source).getTourDePoitrine());
 		
 		try {
-			Constructor ct = targetClass.getConstructor( new Class[]{ String.class, String.class, Integer.class, Boolean.class } );
+			Constructor ct = targetClass.getConstructor( new Class[]{ String.class, String.class, int.class, boolean.class } );
 			Object objTest2 = ct.newInstance( "nomTest", "AdresseTest", 23, true );
 			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getName() );
 		} catch (SecurityException e) {
