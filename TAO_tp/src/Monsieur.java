@@ -1,6 +1,10 @@
 
 public class Monsieur implements IPersonne {
 
+	public void setAge(int age) {
+		this.age = age;
+	}
+
 	private String nom, adresse;
 	private int	age;
 	private boolean cigare;
@@ -31,17 +35,6 @@ public class Monsieur implements IPersonne {
 		return this.age;
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return this.nom;
-	}
-
-	@Override
-	public void rename(String name) {
-		// TODO Auto-generated method stub
-		this.nom = name;
-	}
 
 	@Override
 	public void setAdresse(String adr) {
@@ -52,5 +45,14 @@ public class Monsieur implements IPersonne {
 	public void toggleCigare() {
 		this.cigare = !this.cigare;
 	}
+
+	public String getNom() {
+		return nom;
+	}
+	
+	public void setNom( String nom ) {
+		this.nom = nom;
+	}
+
 
 }

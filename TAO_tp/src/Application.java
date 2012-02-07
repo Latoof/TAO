@@ -1,8 +1,10 @@
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 
 public class Application {
@@ -27,13 +29,78 @@ public class Application {
 		Object o = c.newInstance();
 		
 		Object objTest = c.newInstance();
-			
-
 		 
-		conversion( objTest, cAlt );
 		
+		Monsieur mon = new Monsieur("SonNom", "14 rue machinechouette", 23, true);
+		Object mad = conversion_t( mon, Mademoiselle.class );
 		
+		System.out.println( "Objet de sortie : "+((Mademoiselle) mad).getNom()+", "+ ((Mademoiselle) mad).getAge() +" ans - "+((Mademoiselle) mad).getAdresse() );
 			
+		proxy_t();
+	}
+	
+	public static Object conversion_t( Object source, Class<?> targetClass ) throws InstantiationException, IllegalAccessException {
+
+		Class<?> sourceClass = source.getClass();
+		
+	
+		Field[] sFields = sourceClass.getDeclaredFields();
+		Method[] sMethods = sourceClass.getMethods();
+		
+		Object oOut = targetClass.newInstance();
+		
+		
+		for ( int i=0; i < sFields.length; i++ ) {
+			
+			try {
+				Field f = targetClass.getDeclaredField( sFields[i].getName() ); // On cherche si le Field existe dans la source ET dans la distination
+				System.out.println("Passed "+f.getName());
+				Class<?> type = f.getType();
+				//f.set(oOut, sFields[i].get( source )); // Mettre dans l'objet de sortie le contenu du champs de meme nom venant de la classe source.
+				/* --> Ne fonctionne pas pour les attributs prives, donc va falloir utiliser les setters, chaud ! */
+
+				char[] stringArray = f.getName().toCharArray();
+				stringArray[0] = Character.toUpperCase(stringArray[0]);
+				String fNameMaj = new String(stringArray);
+
+				Method mSet = targetClass.getDeclaredMethod("set"+fNameMaj, f.getType());
+				Method mGet = sourceClass.getDeclaredMethod("get"+fNameMaj);
+				
+				System.out.println("Found "+mSet.getName()+" and "+mGet.getName());
+				
+				mSet.invoke( oOut, mGet.invoke(source) );
+
+				/**
+				 * FIn experience
+				 * Cela fonctionne. Prends en de la graine ! :P *content*
+				 */
+				
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				System.out.println("Ignored : "+sFields[i].getName());
+				
+			} catch (NoSuchMethodException e) {
+				System.out.println("Getter/Setter not found for "+sFields[i].getName());
+				//e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			finally {
+
+			}
+			
+		}
+		
+		System.out.println("Finished");
+		return oOut;
 	}
 
 	
@@ -107,11 +174,9 @@ public class Application {
 		try {
 			Constructor ct = targetClass.getConstructor( new Class[]{ String.class, String.class, int.class, boolean.class } );
 			Object objTest2 = ct.newInstance( "nomTest", "AdresseTest", 23, true );
-			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getName() );
+			System.out.println( "Tentative d'instance avec constructeur : "+((IPersonne)objTest2).getNom() );
+
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -120,11 +185,78 @@ public class Application {
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		
 		
 	return converted;
 		
 	}
+	
+	public static void proxy_t() {
+		 IPersonne p = (IPersonne) Handler_Personne.newInstance(new Monsieur());
+		 p.setNom("tteeesst");
+		 System.out.println(p.getNom());
+	}
+	
+	/***
+	public static void test_proxy() {
+		
+		try {
+			Proxy prox = (Proxy) create(
+					Handler_Monsieur.class.getMethod("pSetNom", String.class),
+					new Monsieur(),
+					Monsieur.class.getMethod("setNom", String.class)
+					);
+			
+					System.out.println("created");
+			
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		
+		Monsieur instance = (Monsieur) Proxy.newProxyInstance(
+				Monsieur.class.getClassLoader(),
+				new Class[] {Monsieur.class},
+				new Handler_Monsieur()
+				);
+		
+		instance.setNom("test");
+		
+		System.out.println(instance.getNom());
+		
+
+		}
+		*/
+	/*
+    public static Object create(
+            final Method listenerMethod, 
+            final Object target, 
+            final Method targetMethod)
+        {
+
+            InvocationHandler handler = new Handler_Monsieur() {
+                public Object invoke(Object proxy, Method method, Object[] args) 
+                throws Throwable {
+                    // Send all methods execept for the targetMethod to
+                    // the superclass for handling.
+                    if (listenerMethod.equals(method)) {
+                        return targetMethod.invoke(target, args);
+                    } else {
+                        return super.invoke(proxy, method, args);
+                    }
+                }
+            };
+            Class cls = listenerMethod.getDeclaringClass();
+            ClassLoader cl = cls.getClassLoader();
+            return Proxy.newProxyInstance(cl, new Class[]{cls}, handler);
+        }
+	*/
 }
