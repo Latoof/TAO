@@ -41,40 +41,52 @@ public class Application {
 		proxy_t();
 	}
 	
+	
+	/* Pour cloner un Objet source dans une classe Cible 
+	 * Ici, on se limite a copier les attributs communs aux deux objets. 
+	 */
 	public static Object conversion_t( Object source, Class<?> targetClass ) throws InstantiationException, IllegalAccessException {
 
 		Class<?> sourceClass = source.getClass();
-		
-	
 		Field[] sFields = sourceClass.getDeclaredFields();
-		Method[] sMethods = sourceClass.getMethods();
 		
 		Object oOut = targetClass.newInstance();
 		
-		
+		/* On parcourt chaque attribut */
 		for ( int i=0; i < sFields.length; i++ ) {
 			
 			try {
-				Field f = targetClass.getDeclaredField( sFields[i].getName() ); // On cherche si le Field existe dans la source ET dans la distination
-				System.out.println("Passed "+f.getName());
-				Class<?> type = f.getType();
-				//f.set(oOut, sFields[i].get( source )); // Mettre dans l'objet de sortie le contenu du champs de meme nom venant de la classe source.
-				/* --> Ne fonctionne pas pour les attributs prives, donc va falloir utiliser les setters, chaud ! */
+				// On cherche si le Field existe dans la source ET dans la distination
+				Field f = targetClass.getDeclaredField( sFields[i].getName() ); 
+				/* Si l'attribut n'existe pas dans la Classe cible, une exception est declenchee et ca break
+				 * pour l'attribut en cours (donc on passe direct a l'attribut suivant
+				 */
+				
+				System.out.println("Trying "+f.getName());
+				
+				//f.set(oOut, sFields[i].get( source )); 
+				// Mettre dans l'objet de sortie le contenu du champs de meme nom venant de la classe source.
+				/* --> Ne fonctionne pas pour les attributs privees, donc il faut utiliser les methodes setters et getters ! */
 
+				
 				char[] stringArray = f.getName().toCharArray();
 				stringArray[0] = Character.toUpperCase(stringArray[0]);
 				String fNameMaj = new String(stringArray);
+				/* Ca c'etait juste pour transformer la premiere lettre de l'attribut en Maj xD */
 
 				Method mSet = targetClass.getDeclaredMethod("set"+fNameMaj, f.getType());
 				Method mGet = sourceClass.getDeclaredMethod("get"+fNameMaj);
+				/* Comme on est super malin, on regarde si des setters/getters existent pour l'attribut en cours */
 				
 				System.out.println("Found "+mSet.getName()+" and "+mGet.getName());
+				/* A ce point-ci, le programme doit etre content. */
 				
+	
 				mSet.invoke( oOut, mGet.invoke(source) );
-
-				/**
-				 * FIn experience
-				 * Cela fonctionne. Prends en de la graine ! :P *content*
+				/* On invoque la methode Setter du l'objet cible en passant en argument
+				 * le resultat de la methode Getter de la source.
+				 * Les getters et les setters ont des nommages clairement etablis par 
+				 * des conventions, donc si les noms ne respectent pas la convention, bah tant pis !
 				 */
 				
 			} catch (SecurityException e) {
@@ -101,7 +113,6 @@ public class Application {
 			
 		}
 		
-		System.out.println("Finished");
 		return oOut;
 	}
 
