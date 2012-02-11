@@ -67,8 +67,4 @@ public class Handler_Personne implements InvocationHandler {
 	return result;
     }
 
-	public void pSetNom( String nom ) {
-		System.out.println("Methode appellee");
-	}
-	
 }
