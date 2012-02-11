@@ -1,3 +1,6 @@
+package il.faut.mettre.un.packag;
+
+import il.faut.mettre.un.packag.Handler_Personne.NotSelfArgument;
 
 public class Mademoiselle implements IPersonne {
 
@@ -30,6 +33,7 @@ public class Mademoiselle implements IPersonne {
 		return this.age;
 	}
 
+	@NotSelfArgument
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
@@ -56,6 +60,7 @@ public class Mademoiselle implements IPersonne {
 		return (nom.hashCode()*this.age) / 2;
 	}
 
+	@NotSelfArgument
 	public String getNom() {
 		return nom;
 	}

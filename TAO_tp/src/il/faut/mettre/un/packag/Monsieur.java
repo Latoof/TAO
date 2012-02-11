@@ -1,3 +1,6 @@
+package il.faut.mettre.un.packag;
+
+import il.faut.mettre.un.packag.Handler_Personne.NotSelfArgument;
 
 public class Monsieur implements IPersonne {
 
@@ -46,10 +49,12 @@ public class Monsieur implements IPersonne {
 		this.cigare = !this.cigare;
 	}
 
+	@NotSelfArgument
 	public String getNom() {
 		return nom;
 	}
 	
+	@NotSelfArgument
 	public void setNom( String nom ) {
 		this.nom = nom;
 	}

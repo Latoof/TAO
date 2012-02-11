@@ -1,3 +1,4 @@
+package il.faut.mettre.un.packag;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -6,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import il.faut.mettre.un.packag.*;
 
 public class Application {
 
@@ -14,14 +16,14 @@ public class Application {
 
 		Class<?> c = null;
 		try {
-			c = Class.forName("Mademoiselle");
+			c = Class.forName("il.faut.mettre.un.packag.Mademoiselle");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		
 		Class<?> cAlt = null;
 		try {
-			cAlt = Class.forName("Monsieur");
+			cAlt = Class.forName("il.faut.mettre.un.packag.Monsieur");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -199,68 +201,14 @@ public class Application {
 	}
 	
 	public static void proxy_t() {
-		 IPersonne p = (IPersonne) Handler_Personne.newInstance(new Monsieur());
-		 p.setNom("tteeesst");
+		Monsieur m = new Monsieur();
+		
+		 IPersonne p = (IPersonne) Handler_Personne.newInstance( m );
+		 p.setNom("Trolilol !");
+		 p.equals( m );
+		
 		 System.out.println(p.getNom());
 	}
 	
-	/*
-	public static void test_proxy() {
-		
-		try {
-			Proxy prox = (Proxy) create(
-					Handler_Monsieur.class.getMethod("pSetNom", String.class),
-					new Monsieur(),
-					Monsieur.class.getMethod("setNom", String.class)
-					);
-			
-					System.out.println("created");
-			
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 
-		
-		Monsieur instance = (Monsieur) Proxy.newProxyInstance(
-				Monsieur.class.getClassLoader(),
-				new Class[] {Monsieur.class},
-				new Handler_Monsieur()
-				);
-		
-		instance.setNom("test");
-		
-		System.out.println(instance.getNom());
-		
-
-		}
-		*/
-	/*
-    public static Object create(
-            final Method listenerMethod, 
-            final Object target, 
-            final Method targetMethod)
-        {
-
-            InvocationHandler handler = new Handler_Monsieur() {
-                public Object invoke(Object proxy, Method method, Object[] args) 
-                throws Throwable {
-                    // Send all methods execept for the targetMethod to
-                    // the superclass for handling.
-                    if (listenerMethod.equals(method)) {
-                        return targetMethod.invoke(target, args);
-                    } else {
-                        return super.invoke(proxy, method, args);
-                    }
-                }
-            };
-            Class cls = listenerMethod.getDeclaringClass();
-            ClassLoader cl = cls.getClassLoader();
-            return Proxy.newProxyInstance(cl, new Class[]{cls}, handler);
-        }
-	*/
 }
