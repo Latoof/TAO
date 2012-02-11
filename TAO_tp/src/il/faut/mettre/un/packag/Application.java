@@ -211,14 +211,24 @@ public class Application {
 		
 	}
 	
+	/* Methode de test pour instancier un proxy vers une interface IPersonne */
 	public static void proxy_t() {
+		
 		Monsieur m = new Monsieur();
+		/* Classe Monsieur heritant de IPersonne */
 		
-		 IPersonne p = (IPersonne) Handler_Personne.newInstance( m );
-		 p.setNom("Trolilol !");
-		 p.equals( m );
+		/* Le "truc", c'est qu'on va utiliser l'interface comme un Objet
+		 * par l'intermediaire du Proxy
+		 */
+		IPersonne p = (IPersonne) Handler_Personne.newInstance( m );
+		p.setNom("Trolilol !");
+		p.equals( m );
+		/* Les methodes appellees passent alors dans la methode "invoke"
+		 * de Handler_Personne, ce qui permet d'effectuer des traitements
+		 * ou des verifications systematiques via cette derniere
+		 */
 		
-		 System.out.println(p.getNom());
+		System.out.println(p.getNom());
 	}
 	
 

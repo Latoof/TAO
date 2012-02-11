@@ -9,9 +9,15 @@ public class Handler_Personne implements InvocationHandler {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface NotSelfArgument{};
+	/* Syntaxes liees aux Annotations, rien a voir 
+	 * avec cette classe Handler_Personne
+	 */
 
     private Object obj;
-
+    
+    /* Methode de l'Interface "InvocationHandler" qui permet d'instancier
+     * dynamiquement un objet (voir methode "t_proxy" de Application.java) 
+     */
     public static Object newInstance(Object obj) {
 	return java.lang.reflect.Proxy.newProxyInstance(
 	    obj.getClass().getClassLoader(),
@@ -30,6 +36,9 @@ public class Handler_Personne implements InvocationHandler {
 	try {
 	    System.out.println("before method " + m.getName());
 	    
+	    /* Je suis pas parvenu a faire grand chose avec les Annotations
+	     * mais le principe est qu'ici on peut faire des verifs, et ajustements
+	     * selon plusieurs parametres, avant que la methode soit appelee.
 	    if ( m.isAnnotationPresent( NotSelfArgument.class) ) {
 
 	    	System.out.println( m.getName() +" is NotSelfArg ");
@@ -42,8 +51,11 @@ public class Handler_Personne implements InvocationHandler {
 	    	}
 	    	
 	    }
+	    */
 	    
 	    result = m.invoke(obj, args);
+	    /* Invocation effective de la methode */
+	    
         } catch (InvocationTargetException e) {
 	    throw e.getTargetException();
         } catch (Exception e) {
